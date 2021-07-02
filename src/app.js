@@ -39,12 +39,5 @@ const dbOptions = {
   
   connection.on("warning", (e) => console.warn(e.stack));
 
-// mongoose.connect(
-//     process.env.DB_CONNECTION,
-//     { useUnifiedTopology: true, useNewUrlParser: true }
-//     , () => {
-//         console.log('conectado a la db')
-//     })
-// Const 
 app.listen(port)
 
