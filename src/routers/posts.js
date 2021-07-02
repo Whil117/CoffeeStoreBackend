@@ -2,20 +2,61 @@ const Express = require('express')
 const router = Express.Router()
 const Posts = require('../models/Post')
 
-router.get('/posts', (req, res) => {
-    res.send('we are on posts')
+
+//GET BACK ALL THE POSTS
+router.get('/', async (req, res) => {
+    try {
+        const posts = await Posts.find()
+        res.json(posts)
+    } catch (error) {
+        res.sendStatus(500)
+        console.log(error)
+    }
 
 })
+//SUBMIT POST
 router.post('/', async (req, res) => {
+
     const post = new Posts({
         ...req.body
     })
     try {
-        const savePost = await post.save()
-        console.log(savePost)
-        res.json(savePost)
+        post.save()
+        res.json(post)
     } catch (error) {
-        resp.json({ msg: error })
+        res.sendStatus(500)
+        console.log(error)
+    }
+})
+
+//SPECIFIC POST
+router.get('/:postId', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.postId)
+        res.json(post)
+    } catch (error) {
+        res.json({ msj: error })
+    }
+})
+
+//DELETE POST 
+router.delete('/:postId', async (req, res) => {
+    try {
+        const removePost = await Posts.deleteOne({ _id: req.params.postId })
+        res.json(removePost)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+//UPDATE POST
+router.patch('/:postId', async (req, res) => {
+    try {
+        const updatePost = await Posts.updateOne({ _id: req.params.postId },
+            { $set: { title: req.body.title } })
+        res.json(updatePost)
+    } catch (error) {
+        console.log(error)
     }
 })
 
