@@ -8,7 +8,7 @@ dotenv.config();
 const router = Express.Router();
 
 //SUBMIT POST
-router.post("/post", async (req: any, res: any) => {
+router.post("/", async (req: any, res: any) => {
   const token = req.headers["x-access-token"];
 
   if (!token) {

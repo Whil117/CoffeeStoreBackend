@@ -7,7 +7,7 @@ dotenv.config();
 
 const router = Express.Router();
 
-router.get("/data", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
     const token:any = req.headers["x-access-token"];
 
     if (!token) {

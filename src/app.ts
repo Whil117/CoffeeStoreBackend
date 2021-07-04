@@ -3,7 +3,7 @@ import cors  from 'cors'
 import './connect/connect'
 import dotenv from "dotenv";
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8000
 const app = express()
 dotenv.config();
 
@@ -17,9 +17,9 @@ const RegisterUser = require('./routers/register')
 const postsRouter = require('./routers/posts')
 const DataRouter = require('./routers/Data')
 
-app.use(RegisterUser)
-app.use(postsRouter)
-app.use(DataRouter)
+app.use('/register',RegisterUser)
+app.use('/posts',postsRouter)
+app.use('/data',DataRouter)
 
 //main
 app.get('/', (req: any, res: any) => {
@@ -27,3 +27,4 @@ app.get('/', (req: any, res: any) => {
 })
 
 app.listen(port)
+//    "dev": "nodemon src/app.ts",
