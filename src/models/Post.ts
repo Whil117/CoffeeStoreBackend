@@ -1,10 +1,19 @@
 const mongoose = require('mongoose')
 
 const PostSchema = mongoose.Schema({
-    title:{
+    Coffee:{
         type:String,
     },
-    descript:{
+    Type:{
+        type:String
+    },
+    With:{
+        type:String || Number
+    },
+    Grind:{
+        type:String
+    },
+    Week:{
         type:String
     },
     date:{
