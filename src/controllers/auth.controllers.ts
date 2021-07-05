@@ -1,35 +1,61 @@
-import { Request, Response } from "express";
+import Express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-const Posts = require("../models/Post");
+import dotenv from "dotenv";
 
+const Register = require("../models/User");
+dotenv.config();
 
+const router = Express.Router();
 
-// function createTokenDoctor(key:string) {
-//   return jwt.sign({
-//     token:key
-//   },'secret')
-// }
+////////////////////////////////////////////////////////////////////////////
+//USER
+type Token = string;
+router.get("/me", async (req: Request, res: Response) => {
+  const token = req.headers["token"];
 
+  if (!token) {
+    return res.status(401).json({
+      auth: false,
+      type: "post",
+      message: "no token provided",
+    });
+  }
+  const decoded: any = jwt.verify(token as Token, `${process.env.DB_KEY}`);
 
-export const verify = async (req: Request, res: Response) => {
-  const {token} = req.body
+  const user = await Register.findById(decoded.id, { password: 0 });
+  if (!user) {
+    return res.status(404).send("no user found");
+  }
+  res.json(user);
+});
 
-  jwt.sign({token:'sdaf'},`${process.env.DB_KEY}`)
+////////////////////////////////////////////////////////////////////////////
+//SIGN UP USER
+router.post("/signup", async (req: Request, res: Response) => {
+  const register = new Register({
+    ...req.body,
+  });
+  register.password = await register.encryptPassword(register?.password);
 
-  // res.status(200).json({token:createTokenDoctor(`${process.env.DB_KEY}`)})
-  // if (!token) {
-  //   return res.status(400).json({ msg: "Please. Send all Information" });
-  // }
+  await register.save();
+  const token = jwt.sign({ id: register._id }, `${process.env.DB_KEY}`);
+  res.json({ username: register.username, auth: true, token });
+});
 
-  // const verify = jwt.verify(token,'secret');
-  // if (verify) {
-  //   try {
-  //     return res.status(200).json({ msg: true });
-  //   } catch (error) {
-  //     console.log(error);
-  //     //   return res.status(400).json(error);
-  //   }
-  // } else {
-  //   return res.status(400).json({ msg: "Token Unvailable" });
-  // }
-};
+////////////////////////////////////////////////////////////////////////////
+//SIGN IN USER
+router.post("/signin", async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+  const user = await Register.findOne({ username: username });
+  if (!user) {
+    return res.status(404).send("user not found");
+  }
+  const passvalid = await user.validPass(password);
+  if (!passvalid) {
+    res.status(401).json({ auth: false, token: null,password:'incorrect' });
+  }
+  const token = await jwt.sign({id:user._id},`${process.env.DB_KEY}`)
+  res.json({ username: username, auth: true, token });
+});
+
+module.exports = router;

@@ -17,4 +17,4 @@ connection.once("open", () => {
   console.log("mongodb conect");
 });
 
-connection.on("warning", (e) => console.warn(e.stack));
+connection.on("warning", (e:any) => console.warn(e.stack));
