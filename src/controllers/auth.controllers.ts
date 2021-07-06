@@ -10,6 +10,7 @@ const router = Express.Router();
 ////////////////////////////////////////////////////////////////////////////
 //USER
 type Token = string;
+
 router.get("/me", async (req: Request, res: Response) => {
   const token = req.headers["token"];
 
@@ -39,7 +40,7 @@ router.post("/signup", async (req: Request, res: Response) => {
 
   await register.save();
   const token = jwt.sign({ id: register._id }, `${process.env.DB_KEY}`);
-  res.json({ username: register.username, auth: true, token });
+  res.json({ auth: true, type: "Sign Up", username: register.username, token });
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -52,10 +53,10 @@ router.post("/signin", async (req: Request, res: Response) => {
   }
   const passvalid = await user.validPass(password);
   if (!passvalid) {
-    res.status(401).json({ auth: false, token: null,password:'incorrect' });
+    res.status(401).json({ auth: false, token: null, password: "incorrect" });
   }
-  const token = await jwt.sign({id:user._id},`${process.env.DB_KEY}`)
-  res.json({ username: username, auth: true, token });
+  const token = await jwt.sign({ id: user._id }, `${process.env.DB_KEY}`);
+  res.json({ auth: true,type:'Sign In', username: username, token });
 });
 
 module.exports = router;
