@@ -27,7 +27,7 @@ router.get("/me", async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).send("no user found");
   }
-  res.json(user);
+  res.json({auth:true,user});
 });
 
 ////////////////////////////////////////////////////////////////////////////
