@@ -11,6 +11,9 @@ const Data = new mongoose.Schema<Props>({
     Coffee: {
         type: String
     },
+    Type:{
+        type:String
+    },
     With: {
         type: String
     },
