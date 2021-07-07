@@ -11,10 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 
 app.use(cors())
-
+///////IMPORTS PAGES
 const auth = require('./controllers/auth.controllers')
+const Data = require('./routers/Data')
 
 app.use(auth)
+app.use('/data',Data)
 
 app.get('/', (req: any, res: any) => {
     res.json({welcome:'whil'})
